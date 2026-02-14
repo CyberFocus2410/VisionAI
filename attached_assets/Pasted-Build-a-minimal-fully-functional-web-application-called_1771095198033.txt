@@ -1,0 +1,134 @@
+Build a minimal, fully functional web application called HealThyme – The Molecular Harmony Engine using HTML, CSS, and JavaScript only (no frameworks, no backend).
+
+App Goal
+
+HealThyme allows a user to enter any dish name they want to eat. The app searches a local RecipeDB dataset to find the closest matching recipe, then analyzes it using FlavorDB chemical compound data to compute a Harmony Score and suggest molecular bridge ingredients to improve flavor perception.
+
+Data Requirements
+1. recipes.json (RecipeDB subset)
+
+Include 20–30 recipes.
+Each recipe must have:
+
+{
+  "id": 1,
+  "name": "Lemon Chicken",
+  "ingredients": ["chicken", "lemon", "garlic", "olive oil"]
+}
+
+
+Ingredients must be reusable across recipes.
+
+2. flavorDB.json (FlavorDB subset)
+
+Map ALL ingredients used in RecipeDB to arrays of volatile flavor compounds:
+
+{
+  "lemon": ["limonene", "citral"],
+  "garlic": ["allicin", "sulfur"],
+  "chicken": ["glutamic_acid"],
+  "ginger": ["gingerol", "limonene"]
+}
+
+
+Include realistic compound overlaps.
+
+Core Functionality (MUST IMPLEMENT)
+Dish Matching
+
+Provide a text input where the user enters any dish name
+
+Search recipes.json to find the closest matching recipe
+
+Use simple string similarity and keyword matching
+
+Display the matched recipe name clearly
+
+Molecular Analysis
+
+Extract ingredients from the matched recipe
+
+Retrieve chemical compounds from FlavorDB
+
+Harmony Score Formula
+Harmony Score =
+(Total shared flavor compounds across ingredient pairs)
+÷
+(Total unique flavor compounds in the recipe)
+
+
+Display:
+
+Numeric score (0–1)
+
+Label:
+
+High Harmony
+
+Moderate Harmony
+
+Low Harmony
+
+Molecular Bridging
+
+Allow user to select a “muted” ingredient
+
+Find 2–3 alternative ingredients from FlavorDB
+
+Rank by maximum compound overlap
+
+Display them as Sensory Boost Suggestions
+
+UI Requirements (Very Minimal)
+
+Text input: “Enter dish name”
+
+Button: “Analyze Flavor”
+
+Show:
+
+Matched recipe name
+
+Ingredient list
+
+Harmony Score + label
+
+Table:
+
+Ingredient
+
+Number of compounds
+
+Shared compounds
+
+Dropdown to select muted ingredient
+
+Section: Molecular Bridge Suggestions
+
+Use plain CSS. Focus on clarity, not design.
+
+Constraints
+
+No APIs
+
+No frameworks
+
+No backend
+
+App must run immediately on click
+
+Output Files
+
+Generate:
+
+index.html
+
+style.css
+
+script.js
+
+recipes.json
+
+flavorDB.json
+
+Include clear comments explaining how RecipeDB and FlavorDB are used for molecular analysis.
