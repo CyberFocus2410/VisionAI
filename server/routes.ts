@@ -50,17 +50,17 @@ function performAnalysis(input: any, allRecipes: any[]) {
   input.allergies.forEach((a: string) => restrictedSet.add(a.toLowerCase().trim()));
   input.avoidItems.forEach((i: string) => restrictedSet.add(i.toLowerCase().trim()));
 
+  const restrictedList = Array.from(restrictedSet);
   const availableIngredients = new Set(input.availableIngredients.map((i: string) => i.toLowerCase().trim()));
+  const availableList = Array.from(availableIngredients);
 
   const safeRecipes = allRecipes
     .filter(recipe => {
       // 1. Safety Filter
-      const hasUnsafeIngredient = (recipe.ingredients || []).some((ing: string) => {
+      const ingredients = recipe.ingredients || [];
+      const hasUnsafeIngredient = ingredients.some((ing: string) => {
         const ingLower = ing.toLowerCase();
-        for (const restricted of restrictedSet) {
-          if (ingLower.includes(restricted) || restricted.includes(ingLower)) return true;
-        }
-        return false;
+        return restrictedList.some(restricted => ingLower.includes(restricted) || restricted.includes(ingLower));
       });
       if (hasUnsafeIngredient) return false;
 
@@ -78,7 +78,7 @@ function performAnalysis(input: any, allRecipes: any[]) {
       const totalRecipeIngredients = ingredients.length;
       ingredients.forEach((ing: string) => {
         const ingLower = ing.toLowerCase();
-        for (const avail of availableIngredients) {
+        for (const avail of availableList) {
           if (ingLower.includes(avail) || avail.includes(ingLower)) {
             matchCount++;
             break;
