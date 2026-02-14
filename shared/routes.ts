@@ -58,24 +58,6 @@ export const api = {
         400: errorSchemas.validation,
       },
     },
-    random: {
-      method: 'POST' as const,
-      path: '/api/recipes/random' as const,
-      input: z.object({
-        diseases: z.array(z.string()),
-        allergies: z.array(z.string()),
-        avoidItems: z.array(z.string()),
-        availableIngredients: z.array(z.string()),
-        mode: z.enum(['patient', 'weight_loss', 'weight_gain']),
-        dietPreference: z.enum(['veg', 'nonveg', 'egg']),
-        nutrientDeficiencies: z.array(z.string()),
-        lowOilPreferred: z.boolean(),
-      }),
-      responses: {
-        200: z.custom<typeof recipes.$inferSelect & { matchPercentage: number }>(),
-        404: errorSchemas.notFound,
-      },
-    }
   },
   diseases: {
     list: {
