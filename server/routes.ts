@@ -52,12 +52,12 @@ function performAnalysis(input: any, allRecipes: any[]) {
 
   const restrictedList = Array.from(restrictedSet);
   const availableIngredients = new Set(input.availableIngredients.map((i: string) => i.toLowerCase().trim()));
-  const availableList = Array.from(availableIngredients);
+  const availableList = Array.from(availableIngredients).map(i => String(i));
 
   const safeRecipes = allRecipes
     .filter(recipe => {
       // 1. Safety Filter
-      const ingredients = recipe.ingredients || [];
+      const ingredients = (recipe.ingredients || []) as string[];
       const hasUnsafeIngredient = ingredients.some((ing: string) => {
         const ingLower = ing.toLowerCase();
         return restrictedList.some(restricted => ingLower.includes(restricted) || restricted.includes(ingLower));
@@ -74,7 +74,7 @@ function performAnalysis(input: any, allRecipes: any[]) {
     .map(recipe => {
       // 3. Match Percentage
       let matchCount = 0;
-      const ingredients = recipe.ingredients || [];
+      const ingredients = (recipe.ingredients || []) as string[];
       const totalRecipeIngredients = ingredients.length;
       ingredients.forEach((ing: string) => {
         const ingLower = ing.toLowerCase();
