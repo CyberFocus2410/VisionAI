@@ -1,0 +1,138 @@
+Extend the existing NutriSafe full-stack web application.
+
+IMPORTANT:
+- The app is already working. DO NOT rebuild from scratch.
+- Modify and extend the current backend and frontend safely.
+- Use ONLY backend rule-based logic (no Gemini, no external AI).
+- Keep everything hackathon-safe and stable.
+
+========================
+FEATURES TO ADD (MANDATORY)
+========================
+
+1️⃣ DIET TYPE SELECTION
+Add diet preference selection:
+- Vegetarian
+- Non-Vegetarian
+- Eggitarian
+
+Backend:
+- Add "diet_type" field to each recipe (veg | nonveg | egg)
+- Filter recipes strictly based on user-selected diet
+
+Frontend:
+- Add radio buttons or cards for diet selection in input form
+
+------------------------
+
+2️⃣ NUTRIENT DEFICIENCY INPUT (SIMPLIFIED)
+Allow users to select nutrient deficiencies (not medical diagnosis):
+
+Include options:
+- Protein
+- Iron
+- Calcium
+- Vitamin D
+- Vitamin B12
+- Fiber
+
+Backend logic:
+- Map deficiencies to recipe nutrient tags:
+  - Protein → high_protein
+  - Iron → iron_rich
+  - Calcium → calcium_rich
+  - Vitamin D → vitamin_d_rich
+  - B12 → b12_rich
+  - Fiber → high_fiber
+- Prioritize or filter recipes that contain matching nutrient tags
+
+Frontend:
+- Multi-select checkboxes for nutrient deficiencies
+
+------------------------
+
+3️⃣ LOW / HIGH OIL USAGE FILTER
+Add oil usage detection:
+
+Backend:
+- Add "oil_level" field to recipes (low | medium | high)
+- If user selects "Low oil preferred", only show low-oil recipes
+
+Frontend:
+- Add a toggle or checkbox: "Prefer low-oil dishes"
+
+------------------------
+
+4️⃣ INGREDIENT AVAILABILITY MATCHING (ENHANCE EXISTING)
+User inputs ingredients available at home.
+
+Backend:
+- Calculate ingredient match percentage:
+  match_percentage = matched_ingredients / total_recipe_ingredients
+- Rank recipes by highest match percentage
+- Display match percentage in results
+
+------------------------
+
+5️⃣ RANDOM DISH SELECTION
+Add a randomizer feature:
+
+Backend:
+- Provide an option to return ONE random recipe from the filtered list
+
+Frontend:
+- Add a button: "🎲 Surprise Me"
+- When clicked, show a randomly selected safe recipe
+
+------------------------
+
+6️⃣ VOICE-BASED RECIPE READING (TEXT-TO-SPEECH ONLY)
+Do NOT add voice input.
+
+Frontend only:
+- Add a "🔊 Read Recipe" button on recipe detail page
+- Use browser Web Speech API (speechSynthesis)
+- Read cooking steps aloud
+
+========================
+DO NOT ADD
+========================
+- No Gemini or LLM APIs
+- No authentication
+- No external databases
+- No medical diagnosis claims
+- No voice-to-text input
+- No React framework changes
+
+========================
+BACKEND FILES TO UPDATE
+========================
+- app.py
+- data/mock_recipes.json
+
+Ensure mock_recipes.json includes:
+- diet_type
+- nutrients (array)
+- oil_level
+
+========================
+FRONTEND FILES TO UPDATE
+========================
+- Input form page (diet, nutrients, oil preference)
+- Results page (ingredient match %, random button)
+- Recipe detail page (read-aloud button)
+
+========================
+GOAL
+========================
+Deliver a polished, fully working NutriSafe application that:
+- Filters recipes by diet, disease, nutrients, oil usage, and ingredients
+- Suggests practical and safe meals
+- Includes a fun random dish selector
+- Supports voice-based recipe narration
+- Remains stable and demo-ready for a hackathon
+
+Do NOT remove existing functionality.
+Do NOT break current routes.
+Ensure the app runs successfully with:
+python app.py

@@ -11,7 +11,10 @@ export const recipes = pgTable("recipes", {
   protein: integer("protein").notNull(),
   carbs: integer("carbs").notNull(),
   fat: integer("fat").notNull(),
-  category: text("category").notNull(), // 'patient', 'weight_loss', 'weight_gain' (can be multiple, storing primary here or just tags)
+  category: text("category").notNull(), // 'patient', 'weight_loss', 'weight_gain'
+  dietType: text("diet_type").notNull().default('nonveg'), // 'veg', 'nonveg', 'egg'
+  oilLevel: text("oil_level").notNull().default('medium'), // 'low', 'medium', 'high'
+  nutrients: text("nutrients").array().notNull().default([]), // ['high_protein', 'iron_rich', etc]
   steps: text("steps").array().notNull(),
   imageUrl: text("image_url"),
 });
@@ -25,28 +28,22 @@ export type InsertRecipe = z.infer<typeof insertRecipeSchema>;
 
 // Request types
 export type AnalyzeRequest = {
-  diseases: string[]; // List of disease IDs/names
-  allergies: string[]; // List of specific ingredient names to avoid
-  avoidItems: string[]; // User preference avoid list
-  availableIngredients: string[]; // What user has at home
+  diseases: string[];
+  allergies: string[];
+  avoidItems: string[];
+  availableIngredients: string[];
   mode: 'patient' | 'weight_loss' | 'weight_gain';
+  dietPreference: 'veg' | 'nonveg' | 'egg';
+  nutrientDeficiencies: string[]; // ['protein', 'iron', etc]
+  lowOilPreferred: boolean;
 };
 
 // Response types
 export type RecipeMatch = Recipe & {
   matchPercentage: number;
-  isSafe: boolean;
-  reason?: string; // Why it might be unsafe (if we ever show unsafe ones, but per req we filter them)
 };
 
 export type AnalysisResponse = {
   safeRecipes: RecipeMatch[];
-  restrictedIngredients: string[]; // Debug/Info: what ingredients were filtered out
-};
-
-// Disease Knowledge Base Types (Static data structure, but good to have typed)
-export type DiseaseDefinition = {
-  id: string;
-  name: string;
-  avoidIngredients: string[];
+  restrictedIngredients: string[];
 };

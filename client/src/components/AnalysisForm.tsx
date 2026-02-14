@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 // Schema for the form
 const formSchema = z.object({
-  mode: z.enum(['patient', 'weight_loss', 'weight_gain']),
+  mode: z.enum(["patient", "weight_loss", "weight_gain"]),
   diseases: z.array(z.string()).default([]),
   allergies: z.string().optional(), // We'll parse comma-separated string
   avoidItems: z.string().optional(),
@@ -20,14 +20,17 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface AnalysisFormProps {
-  defaultMode?: 'patient' | 'weight_loss' | 'weight_gain';
+  defaultMode?: "patient" | "weight_loss" | "weight_gain";
   onAnalysisComplete: (data: any) => void;
 }
 
-export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: AnalysisFormProps) {
+export function AnalysisForm({
+  defaultMode = "patient",
+  onAnalysisComplete,
+}: AnalysisFormProps) {
   const { data: diseases, isLoading: isLoadingDiseases } = useDiseases();
   const analyzeMutation = useAnalyzeRecipes();
-  
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,15 +47,30 @@ export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: An
     const payload = {
       mode: data.mode,
       diseases: data.diseases,
-      allergies: data.allergies ? data.allergies.split(',').map(s => s.trim()).filter(Boolean) : [],
-      avoidItems: data.avoidItems ? data.avoidItems.split(',').map(s => s.trim()).filter(Boolean) : [],
-      availableIngredients: data.availableIngredients ? data.availableIngredients.split(',').map(s => s.trim()).filter(Boolean) : [],
+      allergies: data.allergies
+        ? data.allergies
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [],
+      avoidItems: data.avoidItems
+        ? data.avoidItems
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [],
+      availableIngredients: data.availableIngredients
+        ? data.availableIngredients
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [],
     };
 
     analyzeMutation.mutate(payload, {
       onSuccess: (result) => {
         onAnalysisComplete(result);
-      }
+      },
     });
   };
 
@@ -63,18 +81,30 @@ export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: An
       {/* Mode Selection */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { id: 'patient', label: 'Patient Care', desc: 'Manage specific conditions' },
-          { id: 'weight_loss', label: 'Weight Loss', desc: 'Calorie deficit planning' },
-          { id: 'weight_gain', label: 'Weight Gain', desc: 'Muscle & mass building' },
+          {
+            id: "patient",
+            label: "Patient Care",
+            desc: "Manage specific conditions",
+          },
+          {
+            id: "weight_loss",
+            label: "Weight Loss",
+            desc: "Calorie deficit planning",
+          },
+          {
+            id: "weight_gain",
+            label: "Weight Gain",
+            desc: "Muscle & mass building",
+          },
         ].map((mode) => (
           <div
             key={mode.id}
-            onClick={() => form.setValue('mode', mode.id as any)}
+            onClick={() => form.setValue("mode", mode.id as any)}
             className={cn(
               "cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 relative overflow-hidden",
               selectedMode === mode.id
                 ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
-                : "border-slate-100 bg-white hover:border-slate-200"
+                : "border-slate-100 bg-white hover:border-slate-200",
             )}
           >
             {selectedMode === mode.id && (
@@ -82,10 +112,14 @@ export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: An
                 <Check className="w-5 h-5" />
               </div>
             )}
-            <h3 className={cn(
-              "font-display font-bold text-lg",
-              selectedMode === mode.id ? "text-primary" : "text-slate-700"
-            )}>{mode.label}</h3>
+            <h3
+              className={cn(
+                "font-display font-bold text-lg",
+                selectedMode === mode.id ? "text-primary" : "text-slate-700",
+              )}
+            >
+              {mode.label}
+            </h3>
             <p className="text-sm text-slate-500 mt-1">{mode.desc}</p>
           </div>
         ))}
@@ -96,9 +130,11 @@ export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: An
         <div>
           <h3 className="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
             Medical Conditions
-            <span className="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full">Optional</span>
+            <span className="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full">
+              Optional
+            </span>
           </h3>
-          
+
           {isLoadingDiseases ? (
             <div className="flex items-center gap-2 text-slate-400 text-sm">
               <Loader2 className="w-4 h-4 animate-spin" /> Loading conditions...
@@ -110,15 +146,15 @@ export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: An
                   key={disease.id}
                   className={cn(
                     "flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer",
-                    form.watch('diseases')?.includes(disease.id)
+                    form.watch("diseases")?.includes(disease.id)
                       ? "border-primary bg-primary/5 text-primary-900"
-                      : "border-slate-100 hover:border-slate-200 text-slate-600"
+                      : "border-slate-100 hover:border-slate-200 text-slate-600",
                   )}
                 >
                   <input
                     type="checkbox"
                     value={disease.id}
-                    {...form.register('diseases')}
+                    {...form.register("diseases")}
                     className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
                   />
                   <span className="text-sm font-medium">{disease.name}</span>
@@ -136,19 +172,21 @@ export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: An
                 Allergies & Intolerances
               </label>
               <textarea
-                {...form.register('allergies')}
+                {...form.register("allergies")}
                 placeholder="e.g. Peanuts, Shellfish, Gluten..."
                 className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none resize-none h-32"
               />
-              <p className="text-xs text-slate-400 mt-2">Comma separated list of ingredients to strictly avoid.</p>
+              <p className="text-xs text-slate-400 mt-2">
+                Comma separated list of ingredients to strictly avoid.
+              </p>
             </div>
-            
+
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Disliked Items
               </label>
               <input
-                {...form.register('avoidItems')}
+                {...form.register("avoidItems")}
                 placeholder="e.g. Mushrooms, Cilantro..."
                 className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none"
               />
@@ -163,7 +201,7 @@ export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: An
               We'll prioritize recipes that use ingredients you already have.
             </p>
             <textarea
-              {...form.register('availableIngredients')}
+              {...form.register("availableIngredients")}
               placeholder="e.g. Chicken breast, Rice, Spinach, Olive oil, Tomatoes..."
               className="w-full p-4 rounded-xl border border-emerald-200 bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none resize-none h-48"
             />
@@ -185,7 +223,7 @@ export function AnalysisForm({ defaultMode = 'patient', onAnalysisComplete }: An
           ) : (
             <>
               Find Safe Recipes
-              <ArrowRight className="w-5 h-5" />
+              <span className="ml-2">→</span>
             </>
           )}
         </button>
