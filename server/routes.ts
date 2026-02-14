@@ -78,7 +78,7 @@ function performAnalysis(input: any, allRecipes: any[]) {
       return true;
     })
     .map(recipe => {
-      // 5. Match Percentage & Nutrient Priority
+      // 5. Match Percentage
       let matchCount = 0;
       recipe.ingredients.forEach((ing: string) => {
         const ingLower = ing.toLowerCase();
@@ -137,7 +137,6 @@ export async function registerRoutes(
         steps: ["Sauté veggies", "Add lentils and broth", "Simmer 30 mins"],
         imageUrl: "https://images.unsplash.com/photo-1547592166-23acbe3a624b"
       }
-      // ... adding more variants to ensure diet diversity
     ];
     for (const r of seedRecipes) await storage.createRecipe(r);
   }
@@ -154,14 +153,6 @@ export async function registerRoutes(
     const input = api.recipes.analyze.input.parse(req.body);
     const result = performAnalysis(input, await storage.getRecipes());
     res.json(result);
-  });
-
-  app.post(api.recipes.random.path, async (req, res) => {
-    const input = api.recipes.random.input.parse(req.body);
-    const { safeRecipes } = performAnalysis(input, await storage.getRecipes());
-    if (safeRecipes.length === 0) return res.status(404).json({ message: "No safe recipes found" });
-    const randomRecipe = safeRecipes[Math.floor(Math.random() * safeRecipes.length)];
-    res.json(randomRecipe);
   });
 
   return httpServer;
