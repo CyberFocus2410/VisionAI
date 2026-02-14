@@ -1,0 +1,209 @@
+Build a full-stack Flask web application called "NutriSafe".
+
+IMPORTANT:
+- Build backend and frontend in the SAME project.
+- Use Python (Flask), HTML, CSS, and vanilla JavaScript.
+- DO NOT use Gemini or any external AI API.
+- All logic must be handled using backend rule-based logic.
+- Keep the solution hackathon-safe and fully runnable.
+
+========================
+APP OVERVIEW
+========================
+NutriSafe is a medical-aware diet recommendation web app.
+
+The app recommends SAFE recipes by:
+- Analyzing user diseases
+- Excluding unsafe ingredients
+- Respecting allergies and avoidable items
+- Matching recipes with ingredients the user already has
+- Supporting weight loss and weight gain goals
+
+========================
+CORE FEATURES
+========================
+
+1️⃣ DISEASE-BASED FOOD SAFETY (Backend Logic)
+The user can select MULTIPLE diseases.
+
+Include AT LEAST the following 21 common diseases:
+- Diabetes
+- Hypertension (High BP)
+- Heart Disease
+- Thyroid
+- Asthma
+- Obesity
+- Anemia
+- Kidney Disease
+- Liver Disease
+- PCOS
+- Arthritis
+- Acid Reflux (GERD)
+- High Cholesterol
+- Fatty Liver
+- IBS
+- Lactose Intolerance
+- Gluten Sensitivity
+- Migraine
+- Gout
+- Osteoporosis
+- Depression
+
+For EACH disease:
+- Define a list of generally avoidable ingredients
+  (example: sugar, refined flour, excess salt, butter, fried food, dairy, gluten, red meat, etc.)
+
+Backend must:
+- Combine avoidable ingredients from ALL selected diseases
+- Add user-input allergies
+- Add user-input avoidable items
+- Remove any recipe that contains ANY restricted ingredient
+
+========================
+2️⃣ INGREDIENT AVAILABILITY MATCHING
+User can enter ingredients they currently have at home.
+
+Backend logic:
+- Calculate ingredient match percentage for each recipe
+- Recommend recipes where MOST ingredients match user input
+- Prioritize higher match % recipes in results
+
+========================
+3️⃣ THREE MODES OF ANALYSIS
+User must select ONE mode:
+
+A) Patient Food Recommendation
+- Focus on disease safety
+- Exclude unsafe ingredients
+- Ingredient matching applied
+
+B) Weight Loss Mode
+- Logic-based filtering:
+  - Calories < threshold
+  - Low carbs
+  - Low fat
+  - Moderate protein
+
+C) Weight Gain Mode
+- Logic-based filtering:
+  - High calories
+  - High protein
+  - Healthy fats
+  - Balanced carbs
+
+NO external AI APIs allowed.
+
+========================
+DATABASE (Mock JSON)
+========================
+Create a local file:
+data/mock_recipes.json
+
+Include 10–12 recipes.
+Each recipe MUST have:
+- id
+- name
+- ingredients (array)
+- calories
+- protein
+- carbs
+- fat
+- category (patient | weight_loss | weight_gain)
+- steps (array)
+
+========================
+BACKEND REQUIREMENTS
+========================
+Create Flask backend with routes:
+
+GET /
+- Landing page
+
+POST /analyze
+- Input:
+  - diseases (array)
+  - allergies (array)
+  - avoid_items (array)
+  - available_ingredients (array)
+  - mode (patient | weight_loss | weight_gain)
+
+- Processing:
+  - Build restricted ingredient list
+  - Filter unsafe recipes
+  - Apply nutrition rules based on mode
+  - Rank recipes by ingredient match %
+
+- Output:
+  - Safe, ranked recipe list
+
+GET /recipe/<id>
+- Show full recipe details:
+  - Ingredients
+  - Calories
+  - Protein
+  - Carbs
+  - Fat
+  - Cooking steps
+
+========================
+FRONTEND REQUIREMENTS
+========================
+Build frontend using Flask templates.
+
+Pages:
+
+1️⃣ Landing Page
+- App name: NutriSafe
+- Short description
+- Mode selection buttons
+
+2️⃣ User Input Page
+- Disease selection (checkbox list)
+- Allergies input
+- Avoidable items input
+- Available ingredients input
+- Submit button
+
+3️⃣ Results Page
+- Card layout
+- Show:
+  - Recipe name
+  - Calories
+  - Protein
+  - Ingredient match percentage
+- View Recipe button
+
+4️⃣ Recipe Detail Page
+- Full nutritional breakdown
+- Ingredients list
+- Cooking steps
+
+========================
+DESIGN GUIDELINES
+========================
+- Clean and simple UI
+- Card-based layout
+- Minimal CSS
+- Mobile responsive
+- Focus on usability over animations
+
+========================
+TECH CONSTRAINTS
+========================
+- No authentication
+- No external databases
+- No Gemini or LLM APIs
+- No React or frameworks
+- App must run using:
+  python app.py
+- App must listen on:
+  host 0.0.0.0 and port 3000
+
+========================
+GOAL
+========================
+Deliver a fully working, demo-ready hackathon web app named NutriSafe that:
+- Safely recommends food based on diseases
+- Handles allergies and avoidable items
+- Matches recipes to available ingredients
+- Supports weight loss and weight gain through nutrition logic
