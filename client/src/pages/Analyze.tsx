@@ -39,7 +39,7 @@ export default function Analyze() {
               Find Your Perfect Meal
             </h1>
             <p className="text-white/70 max-w-2xl text-lg">
-              Enter your health details and ingredients below. Our AI analyzes nutritional interactions to ensure every recommendation is safe and beneficial for you.
+              Enter your health details and ingredients below. We analyze nutritional interactions with live data from Foodoscope RecipeDB to ensure every recommendation is safe and beneficial for you.
             </p>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function Analyze() {
                     Recommended Recipes
                   </h2>
                   <p className="text-slate-600">
-                    Found {results.safeRecipes.length} safe matches based on your profile.
+                    Found {results.safeRecipes.length} safe matches fetched live from Foodoscope RecipeDB.
                   </p>
                 </div>
                 

@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
+import { fetchRecipesFromFoodoscope, getRecipeDetails } from "./foodoscope";
 
 // === STATIC DISEASE DATA ===
 const DISEASES = [
@@ -50,19 +51,11 @@ function performAnalysis(input: any, allRecipes: any[]) {
   input.avoidItems.forEach((i: string) => restrictedSet.add(i.toLowerCase().trim()));
 
   const availableIngredients = new Set(input.availableIngredients.map((i: string) => i.toLowerCase().trim()));
-  const requiredNutrientTags = input.nutrientDeficiencies.map((d: string) => DEFICIENCY_MAP[d]).filter(Boolean);
 
   const safeRecipes = allRecipes
     .filter(recipe => {
-      // 1. Diet Type Filter
-      if (input.dietPreference === 'veg' && recipe.dietType !== 'veg') return false;
-      if (input.dietPreference === 'egg' && (recipe.dietType === 'nonveg')) return false;
-      
-      // 2. Oil Level Filter
-      if (input.lowOilPreferred && recipe.oilLevel !== 'low') return false;
-
-      // 3. Safety Filter
-      const hasUnsafeIngredient = recipe.ingredients.some((ing: string) => {
+      // 1. Safety Filter
+      const hasUnsafeIngredient = (recipe.ingredients || []).some((ing: string) => {
         const ingLower = ing.toLowerCase();
         for (const restricted of restrictedSet) {
           if (ingLower.includes(restricted) || restricted.includes(ingLower)) return true;
@@ -71,17 +64,19 @@ function performAnalysis(input: any, allRecipes: any[]) {
       });
       if (hasUnsafeIngredient) return false;
 
-      // 4. Mode Filter
-      if (input.mode === 'weight_loss') return recipe.calories < 600;
-      if (input.mode === 'weight_gain') return recipe.calories > 400;
+      // 2. Mode Filter using nutrition
+      const calories = recipe.nutritional_data?.calories || recipe.calories || 0;
+      if (input.mode === 'weight_loss') return calories < 600;
+      if (input.mode === 'weight_gain') return calories > 400;
 
       return true;
     })
     .map(recipe => {
-      // 5. Match Percentage
+      // 3. Match Percentage
       let matchCount = 0;
-      const totalRecipeIngredients = recipe.ingredients.length;
-      recipe.ingredients.forEach((ing: string) => {
+      const ingredients = recipe.ingredients || [];
+      const totalRecipeIngredients = ingredients.length;
+      ingredients.forEach((ing: string) => {
         const ingLower = ing.toLowerCase();
         for (const avail of availableIngredients) {
           if (ingLower.includes(avail) || avail.includes(ingLower)) {
@@ -94,15 +89,21 @@ function performAnalysis(input: any, allRecipes: any[]) {
         ? Math.round((matchCount / totalRecipeIngredients) * 100)
         : 0;
 
-      // Score for deficiency matching
-      let deficiencyScore = 0;
-      requiredNutrientTags.forEach((tag: string) => {
-        if (recipe.nutrients.includes(tag)) deficiencyScore += 100;
-      });
-
-      return { ...recipe, matchPercentage, totalScore: matchPercentage + deficiencyScore };
+      // Transform to client-side friendly format
+      return {
+        id: recipe.recipe_id || recipe.id,
+        name: recipe.recipe_name || recipe.name,
+        ingredients: recipe.ingredients,
+        calories: recipe.nutritional_data?.calories || recipe.calories,
+        protein: recipe.nutritional_data?.protein || recipe.protein,
+        carbs: recipe.nutritional_data?.carbohydrates || recipe.carbs,
+        fat: recipe.nutritional_data?.fat || recipe.fat,
+        imageUrl: recipe.image_url || recipe.imageUrl,
+        steps: recipe.instructions || recipe.steps,
+        matchPercentage
+      };
     })
-    .sort((a, b) => b.totalScore - a.totalScore);
+    .sort((a, b) => b.matchPercentage - a.matchPercentage);
 
   return { safeRecipes, restrictedIngredients: Array.from(restrictedSet) };
 }
@@ -112,50 +113,47 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  // Seed data with new fields
-  const existingRecipes = await storage.getRecipes();
-  if (existingRecipes.length === 0) {
-    const seedRecipes = [
-      {
-        name: "Grilled Chicken Salad",
-        ingredients: ["chicken breast", "lettuce", "cucumber", "tomato", "olive oil", "lemon juice"],
-        calories: 350, protein: 30, carbs: 10, fat: 15,
-        category: "weight_loss", dietType: "nonveg", oilLevel: "low", nutrients: ["high_protein"],
-        steps: ["Grill chicken", "Chop vegetables", "Mix everything", "Drizzle dressing"],
-        imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
-      },
-      {
-        name: "Quinoa Veggie Bowl",
-        ingredients: ["quinoa", "spinach", "carrots", "chickpeas", "avocado"],
-        calories: 450, protein: 15, carbs: 60, fat: 18,
-        category: "patient", dietType: "veg", oilLevel: "low", nutrients: ["high_fiber", "iron_rich"],
-        steps: ["Cook quinoa", "Steam veggies", "Slice avocado", "Assemble bowl"],
-        imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd"
-      },
-      {
-        name: "Lentil Soup",
-        ingredients: ["lentils", "carrot", "onion", "celery", "vegetable broth", "turmeric"],
-        calories: 300, protein: 18, carbs: 45, fat: 3,
-        category: "patient", dietType: "veg", oilLevel: "low", nutrients: ["high_fiber", "iron_rich"],
-        steps: ["Sauté veggies", "Add lentils and broth", "Simmer 30 mins"],
-        imageUrl: "https://images.unsplash.com/photo-1547592166-23acbe3a624b"
-      }
-    ];
-    for (const r of seedRecipes) await storage.createRecipe(r);
-  }
-
   app.get(api.diseases.list.path, (req, res) => res.json(DISEASES));
-  app.get(api.recipes.list.path, async (req, res) => res.json(await storage.getRecipes()));
+  
+  app.get(api.recipes.list.path, async (req, res) => {
+    const recipes = await fetchRecipesFromFoodoscope();
+    res.json(recipes.map(r => ({
+      id: r.recipe_id,
+      name: r.recipe_name,
+      calories: r.nutritional_data.calories,
+      protein: r.nutritional_data.protein,
+      carbs: r.nutritional_data.carbohydrates,
+      fat: r.nutritional_data.fat,
+      imageUrl: r.image_url
+    })));
+  });
+
   app.get(api.recipes.get.path, async (req, res) => {
-    const recipe = await storage.getRecipe(Number(req.params.id));
+    const recipe = await getRecipeDetails(Number(req.params.id));
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
-    res.json(recipe);
+    res.json({
+      id: recipe.recipe_id,
+      name: recipe.recipe_name,
+      ingredients: recipe.ingredients,
+      calories: recipe.nutritional_data.calories,
+      protein: recipe.nutritional_data.protein,
+      carbs: recipe.nutritional_data.carbohydrates,
+      fat: recipe.nutritional_data.fat,
+      imageUrl: recipe.image_url,
+      steps: recipe.instructions
+    });
   });
 
   app.post(api.recipes.analyze.path, async (req, res) => {
-    const input = api.recipes.analyze.input.parse(req.body);
-    const result = performAnalysis(input, await storage.getRecipes());
-    res.json(result);
+    try {
+      const input = api.recipes.analyze.input.parse(req.body);
+      const liveRecipes = await fetchRecipesFromFoodoscope();
+      const result = performAnalysis(input, liveRecipes);
+      res.json(result);
+    } catch (error) {
+      console.error("Analysis error:", error);
+      res.status(400).json({ message: "Invalid input or API error" });
+    }
   });
 
   return httpServer;

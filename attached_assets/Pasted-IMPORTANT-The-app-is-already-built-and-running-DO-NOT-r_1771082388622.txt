@@ -1,0 +1,62 @@
+IMPORTANT:
+- The app is already built and running. DO NOT rebuild or refactor the project.
+- Make minimal, targeted changes only.
+- Do NOT use Replit Core or paid features.
+- Use Foodoscope RecipeDB API directly as required by judges.
+- The API key is already available in Replit Secrets as FOODOSCOPE_API_KEY.
+
+========================
+TASKS TO COMPLETE
+========================
+
+1) DIRECT API INTEGRATION
+- In the backend, replace any remaining mock or placeholder recipe data usage.
+- Fetch recipes directly from Foodoscope RecipeDB GET endpoints at runtime.
+- Use server-side API calls only (no frontend API calls).
+- Use the official Foodoscope base URL and endpoints.
+
+2) API-COMPLIANT USAGE RULES
+- Do NOT map API responses into a custom schema.
+- Do NOT store API responses locally.
+- Use API response fields directly when rendering:
+  - recipe title / name
+  - ingredients
+  - nutrition values (calories, protein, carbs, fat)
+  - cooking instructions
+
+3) FILTERING (ALLOWED ONLY)
+Apply only light, allowed post-processing:
+- Exclude recipes by checking ingredient strings for:
+  - user allergies
+  - disease-based avoidable ingredients
+- Apply weight loss / weight gain logic ONLY using nutrition values returned by the API.
+- Sort or limit results for better UX.
+
+4) ERROR HANDLING
+- If the API fails, times out, or returns empty data:
+  - Show a clear user-friendly message
+  - Do NOT crash the app
+- Log the API endpoint and response status code for debugging.
+
+5) UI CONFIRMATION
+- Ensure frontend clearly shows that recipes are fetched live from the Foodoscope API.
+- No mock or hardcoded recipe data should be visible.
+
+========================
+DO NOT DO
+========================
+- Do NOT add new features
+- Do NOT introduce Gemini or any AI API
+- Do NOT rebuild UI
+- Do NOT change routing
+- Do NOT require paid Replit features
+
+========================
+GOAL
+========================
+Finalize NutriSafe so that:
+- Foodoscope RecipeDB API is used directly and visibly
+- The app remains stable and demo-ready
+- Judge compliance is fully satisfied
+
+Make minimal, precise changes only.
