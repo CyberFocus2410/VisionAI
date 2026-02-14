@@ -15,6 +15,9 @@ const formSchema = z.object({
   allergies: z.string().optional(), // We'll parse comma-separated string
   avoidItems: z.string().optional(),
   availableIngredients: z.string().optional(),
+  dietPreference: z.enum(["veg", "nonveg", "eggitarian"]),
+  nutrientDeficiencies: z.array(z.string()).default([]),
+  lowOilPreferred: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -39,6 +42,9 @@ export function AnalysisForm({
       allergies: "",
       avoidItems: "",
       availableIngredients: "",
+      dietPreference: "nonveg",
+      nutrientDeficiencies: [],
+      lowOilPreferred: false,
     },
   });
 
@@ -47,6 +53,9 @@ export function AnalysisForm({
     const payload = {
       mode: data.mode,
       diseases: data.diseases,
+      dietPreference: data.dietPreference === "eggitarian" ? "egg" : data.dietPreference,
+      nutrientDeficiencies: data.nutrientDeficiencies,
+      lowOilPreferred: data.lowOilPreferred,
       allergies: data.allergies
         ? data.allergies
             .split(",")
@@ -67,7 +76,7 @@ export function AnalysisForm({
         : [],
     };
 
-    analyzeMutation.mutate(payload, {
+    analyzeMutation.mutate(payload as any, {
       onSuccess: (result) => {
         onAnalysisComplete(result);
       },
@@ -75,6 +84,7 @@ export function AnalysisForm({
   };
 
   const selectedMode = form.watch("mode");
+  const selectedDiet = form.watch("dietPreference");
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -126,6 +136,90 @@ export function AnalysisForm({
       </div>
 
       <div className="bg-white rounded-2xl p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100 space-y-8">
+        {/* Diet Preference */}
+        <div>
+          <h3 className="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
+            Dietary Preference
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { id: "veg", label: "Vegetarian" },
+              { id: "nonveg", label: "Non-Vegetarian" },
+              { id: "eggitarian", label: "Eggitarian" },
+            ].map((diet) => (
+              <label
+                key={diet.id}
+                className={cn(
+                  "flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer",
+                  selectedDiet === diet.id
+                    ? "border-primary bg-primary/5 text-primary-900"
+                    : "border-slate-100 hover:border-slate-200 text-slate-600",
+                )}
+              >
+                <input
+                  type="radio"
+                  value={diet.id}
+                  checked={selectedDiet === diet.id}
+                  onChange={() => form.setValue("dietPreference", diet.id as any)}
+                  className="w-4 h-4 rounded-full border-slate-300 text-primary focus:ring-primary"
+                />
+                <span className="text-sm font-medium">{diet.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Nutrient Deficiencies */}
+        <div>
+          <h3 className="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
+            Nutrient Support
+            <span className="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full">
+              Help focus on your needs
+            </span>
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {[
+              { id: "protein", label: "Protein" },
+              { id: "iron", label: "Iron" },
+              { id: "calcium", label: "Calcium" },
+              { id: "vitamin_d", label: "Vitamin D" },
+              { id: "vitamin_b12", label: "B12" },
+              { id: "fiber", label: "Fiber" },
+            ].map((nut) => (
+              <label
+                key={nut.id}
+                className={cn(
+                  "flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer",
+                  form.watch("nutrientDeficiencies")?.includes(nut.id)
+                    ? "border-primary bg-primary/5 text-primary-900"
+                    : "border-slate-100 hover:border-slate-200 text-slate-600",
+                )}
+              >
+                <input
+                  type="checkbox"
+                  value={nut.id}
+                  {...form.register("nutrientDeficiencies")}
+                  className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
+                />
+                <span className="text-sm font-medium">{nut.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Oil Level Preference */}
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-orange-50 border border-orange-100">
+          <input
+            type="checkbox"
+            id="lowOil"
+            {...form.register("lowOilPreferred")}
+            className="w-5 h-5 rounded border-orange-300 text-orange-600 focus:ring-orange-500"
+          />
+          <label htmlFor="lowOil" className="text-sm font-semibold text-orange-900 cursor-pointer">
+            Prefer Low-Oil Dishes (Recommended for heart health)
+          </label>
+        </div>
+
         {/* Diseases Section */}
         <div>
           <h3 className="text-lg font-bold text-secondary mb-4 flex items-center gap-2">

@@ -80,6 +80,7 @@ function performAnalysis(input: any, allRecipes: any[]) {
     .map(recipe => {
       // 5. Match Percentage
       let matchCount = 0;
+      const totalRecipeIngredients = recipe.ingredients.length;
       recipe.ingredients.forEach((ing: string) => {
         const ingLower = ing.toLowerCase();
         for (const avail of availableIngredients) {
@@ -89,7 +90,9 @@ function performAnalysis(input: any, allRecipes: any[]) {
           }
         }
       });
-      const matchPercentage = Math.round((matchCount / recipe.ingredients.length) * 100);
+      const matchPercentage = totalRecipeIngredients > 0 
+        ? Math.round((matchCount / totalRecipeIngredients) * 100)
+        : 0;
 
       // Score for deficiency matching
       let deficiencyScore = 0;

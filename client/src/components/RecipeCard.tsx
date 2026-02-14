@@ -36,10 +36,11 @@ export function RecipeCard({ recipe, index }: { recipe: RecipeProps; index: numb
         )}
         
         {/* Match Badge */}
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg border border-white/50">
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg border border-white/50 flex flex-col items-center">
           <span className="text-sm font-bold text-primary">
             {Math.round(recipe.matchPercentage)}% Match
           </span>
+          <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Ingredients</span>
         </div>
       </div>
 
