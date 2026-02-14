@@ -1,0 +1,5 @@
+{
+  "name": "NutriSafe Prototype",
+  "description": "An AI-assisted medical nutrition decision system demonstrating integration with FlavorDB and RecipeDB logic.",
+  "requestFramePermissions": []
+}
