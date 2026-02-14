@@ -1,0 +1,22 @@
+{
+    "Chicken": ["glutamic_acid", "methional", "hexanal"],
+    "Lemon": ["limonene", "citral", "terpinene", "beta-pinene"],
+    "Garlic": ["allicin", "sulfur", "methional", "allyl_mercaptan"],
+    "Olive Oil": ["oleic_acid", "hexanal", "polyphenols"],
+    "Tomato": ["glutamic_acid", "furaneol", "hexanal", "beta-ionone"],
+    "Basil": ["estragole", "linalool", "eucalyptol", "beta-pinene"],
+    "Mozzarella": ["diacetyl", "methional", "butyric_acid"],
+    "Onion": ["sulfur", "dipropyl_disulfide", "quercetin", "allicin"],
+    "Ginger": ["gingerol", "limonene", "citral", "camphene"],
+    "Soy Sauce": ["glutamic_acid", "methional", "furan"],
+    "Honey": ["fructose", "glucose", "phenylacetaldehyde"],
+    "Cinnamon": ["cinnamaldehyde", "eugenol", "linalool"],
+    "Apple": ["farnesene", "acetaldehyde", "ester"],
+    "Pork": ["oleic_acid", "thiamine", "glutamic_acid"],
+    "Chocolate": ["theobromine", "pyrazine", "linalool", "vanillin"],
+    "Coffee": ["caffeine", "pyrazine", "methional", "guaiacol"],
+    "Vanilla": ["vanillin", "piperonal", "eugenol"],
+    "Strawberry": ["furaneol", "ethyl_butyrate", "linalool"],
+    "Mint": ["menthol", "carvone", "limonene"],
+    "Lime": ["limonene", "citral", "terpineol"]
+}

@@ -1,0 +1,22 @@
+[
+    { "name": "Lemon Chicken", "ingredients": ["Chicken", "Lemon", "Garlic", "Olive Oil"] },
+    { "name": "Caprese Salad", "ingredients": ["Tomato", "Basil", "Mozzarella", "Olive Oil"] },
+    { "name": "Tomato Soup", "ingredients": ["Tomato", "Onion", "Garlic", "Olive Oil"] },
+    { "name": "Ginger Tea", "ingredients": ["Ginger", "Honey", "Lemon"] },
+    { "name": "Pork Roast", "ingredients": ["Pork", "Garlic", "Onion", "Apple"] },
+    { "name": "Chocolate Lava Cake", "ingredients": ["Chocolate", "Butter", "Sugar", "Eggs"] },
+    { "name": "Teriyaki Chicken", "ingredients": ["Chicken", "Soy Sauce", "Ginger", "Garlic"] },
+    { "name": "Apple Pie", "ingredients": ["Apple", "Cinnamon", "Sugar", "Butter"] },
+    { "name": "Mojito", "ingredients": ["Lime", "Mint", "Sugar", "Rum"] },
+    { "name": "Garlic Bread", "ingredients": ["Bread", "Garlic", "Butter", "Parsley"] },
+    { "name": "Strawberry Shortcake", "ingredients": ["Strawberry", "Cream", "Biscuit", "Sugar"] },
+    { "name": "Coffee Cake", "ingredients": ["Coffee", "Cinnamon", "Sugar", "Flour"] },
+    { "name": "Vanilla Ice Cream", "ingredients": ["Vanilla", "Cream", "Sugar"] },
+    { "name": "Guacamole", "ingredients": ["Avocado", "Lime", "Onion", "Cilantro"] },
+    { "name": "Bruschetta", "ingredients": ["Tomato", "Basil", "Garlic", "Olive Oil", "Bread"] },
+    { "name": "Honey Glazed Ham", "ingredients": ["Pork", "Honey", "Clove"] },
+    { "name": "Spicy Tofu", "ingredients": ["Tofu", "Chili", "Soy Sauce", "Garlic"] },
+    { "name": "Roast Beef", "ingredients": ["Beef", "Rosemary", "Garlic", "Pepper"] },
+    { "name": "Mushroom Risotto", "ingredients": ["Mushroom", "Rice", "Onion", "Parmesan"] },
+    { "name": "Caesar Salad", "ingredients": ["Lettuce", "Parmesan", "Croutons", "Lemon", "Garlic"] }
+]
