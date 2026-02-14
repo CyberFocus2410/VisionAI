@@ -37,3 +37,11 @@ author = "agent"
 task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
+
+[agent]
+expertMode = true
+
+[userenv]
+
+[userenv.shared]
+FOODOSCOPE_API_KEY = "U2DpMMPmpVsXtaH605KesSca8ekJr7WlJh2Ju8JEhg7sgCZ3"

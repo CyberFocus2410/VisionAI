@@ -1,0 +1,79 @@
+Integrate the Foodoscope RecipeDB API directly into the existing NutriSafe application.
+
+IMPORTANT RULES (MUST FOLLOW):
+- The app is already working. DO NOT rebuild from scratch.
+- Use Foodoscope RecipeDB API as the PRIMARY and DIRECT data source.
+- DO NOT create or map recipes into a custom schema.
+- DO NOT store API responses in a local database.
+- Display and use API response fields directly.
+- The API key is already stored in Replit Secrets as FOODOSCOPE_API_KEY.
+
+========================
+API INTEGRATION REQUIREMENTS
+========================
+
+1) API ACCESS
+- Read API key using environment variable:
+  FOODOSCOPE_API_KEY
+- Use the official Foodoscope RecipeDB base URL and endpoints.
+- Perform server-to-server API calls from backend only.
+
+2) API USAGE
+- Use RecipeDB GET endpoints (such as recipesinfo, recipeByTitle, recipe-diet, nutritioninfo).
+- Pass user-selected filters as API query parameters whenever supported:
+  - diet type (veg / non-veg / eggitarian)
+  - recipe category
+  - nutrition ranges (calories, protein, carbs if available)
+
+3) RESPONSE HANDLING (CRITICAL)
+- Do NOT transform or remap API response fields into a new schema.
+- Forward API responses as-is to the frontend.
+- Frontend must render:
+  - recipe title
+  - ingredients
+  - nutrition data
+  - instructions
+directly from API fields.
+
+========================
+ALLOWED POST-PROCESSING
+========================
+The following are allowed and REQUIRED:
+
+- Filtering out recipes by checking ingredient strings for:
+  - user allergies
+  - disease-based avoidable ingredients
+- Sorting and ranking recipes by:
+  - ingredient availability match
+- Applying weight loss / weight gain logic ONLY using API-provided nutrition values.
+- Limiting result count for performance.
+
+========================
+ERROR HANDLING
+========================
+- If API request fails or times out:
+  - Return a user-friendly message
+  - Do NOT crash the app
+- Log API status code and endpoint used for debugging.
+
+========================
+FILES TO UPDATE
+========================
+- app.py (or backend server file)
+- Frontend API call handlers (if needed)
+
+DO NOT:
+- Remove existing UI
+- Remove existing filters
+- Add mock or fallback recipe databases
+
+========================
+GOAL
+========================
+Ensure NutriSafe:
+- Uses Foodoscope RecipeDB API directly
+- Demonstrates real-time API dependency
+- Complies with judge requirements
+- Remains stable and demo-ready
+
+Make minimal but correct changes only.
