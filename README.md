@@ -154,7 +154,8 @@ Built with a focus on:
 - Health safety
 - Data transparency
 - Responsible AI usage
-
+- LIVE APP LINK:-
+https://ai.studio/apps/drive/1cTTo2jMZp0CzuT1tstageyEFzQK7L6t6
 ---
 
 ## 📜 License
