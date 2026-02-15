@@ -6,7 +6,7 @@ import { ProcessingView } from './components/ProcessingView';
 import { RecipeSelection } from './components/RecipeSelection';
 import { RecipeDetail } from './components/RecipeDetail';
 import { analyzeProfileAndGetRecipes } from './services/geminiService';
-import { HeartPulse } from 'lucide-react';
+import { HeartPulse, Mic, MicOff } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<AppStep>(AppStep.LANDING);
@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
 
   const handleGoalSelect = (goal: GoalCategory) => {
     setSelectedGoal(goal);
@@ -73,21 +74,37 @@ const App: React.FC = () => {
             </div>
           </div>
           
-          <nav className="hidden sm:flex items-center gap-4">
-            <span className="text-xs font-semibold text-slate-400">Step:</span>
-            <div className="flex items-center gap-2">
-              {[AppStep.LANDING, AppStep.INPUT, AppStep.SELECTION].map((step, idx) => {
-                const stepLabels = { [AppStep.LANDING]: 'Start', [AppStep.INPUT]: 'Profile', [AppStep.PROCESSING]: 'Analysis', [AppStep.SELECTION]: 'Results', [AppStep.DETAIL]: 'Recipe' };
-                // Simple logic to show active steps
-                const isActive = step === currentStep || (currentStep === AppStep.PROCESSING && step === AppStep.INPUT) || (currentStep === AppStep.DETAIL && step === AppStep.SELECTION);
-                return (
-                  <div key={step} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${isActive ? 'bg-slate-900 text-white' : 'text-slate-400 bg-slate-100'}`}>
-                    {(stepLabels as any)[step]}
-                  </div>
-                )
-              })}
-            </div>
-          </nav>
+          <div className="flex items-center gap-4">
+             {/* Voice Toggle */}
+             <button 
+               onClick={() => setVoiceEnabled(!voiceEnabled)}
+               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
+                 voiceEnabled 
+                 ? 'bg-slate-900 text-white border-slate-900 shadow-md' 
+                 : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+               }`}
+               title="Toggle Voice Assisted Recipe Dictator"
+             >
+               {voiceEnabled ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5" />}
+               <span className="hidden sm:inline">Voice Assistant</span>
+               <span className={`w-2 h-2 rounded-full ${voiceEnabled ? 'bg-emerald-400 animate-pulse' : 'bg-slate-300'}`}></span>
+             </button>
+
+            <nav className="hidden sm:flex items-center gap-4">
+              <span className="text-xs font-semibold text-slate-400">Step:</span>
+              <div className="flex items-center gap-2">
+                {[AppStep.LANDING, AppStep.INPUT, AppStep.SELECTION].map((step, idx) => {
+                  const stepLabels = { [AppStep.LANDING]: 'Start', [AppStep.INPUT]: 'Profile', [AppStep.PROCESSING]: 'Analysis', [AppStep.SELECTION]: 'Results', [AppStep.DETAIL]: 'Recipe' };
+                  const isActive = step === currentStep || (currentStep === AppStep.PROCESSING && step === AppStep.INPUT) || (currentStep === AppStep.DETAIL && step === AppStep.SELECTION);
+                  return (
+                    <div key={step} className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${isActive ? 'bg-slate-900 text-white' : 'text-slate-400 bg-slate-100'}`}>
+                      {(stepLabels as any)[step]}
+                    </div>
+                  )
+                })}
+              </div>
+            </nav>
+          </div>
         </div>
       </header>
 
@@ -133,6 +150,7 @@ const App: React.FC = () => {
             recipe={selectedRecipe} 
             onBack={handleBackToSelection} 
             dailyGoals={userProfile?.dailyGoals}
+            voiceEnabled={voiceEnabled}
           />
         )}
 

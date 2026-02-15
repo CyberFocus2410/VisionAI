@@ -1,7 +1,10 @@
-export type GoalCategory = 'disease' | 'weight-loss' | 'weight-gain' | 'recipe-discovery';
+export type GoalCategory = 'disease' | 'weight-loss' | 'weight-gain' | 'recipe-discovery' | 'random-surprise';
 
 export interface UserProfile {
   primaryGoal: GoalCategory;
+  currentWeight?: string;
+  targetWeight?: string;
+  cuisinePreferences: string[];
   conditions: string;
   diet: 'Veg' | 'Non-Veg' | 'Eggetarian';
   oilLevel: 'Low-Oily' | 'Medium' | 'High-Oily';
@@ -46,6 +49,7 @@ export interface Recipe {
 }
 
 export interface AnalysisResult {
+  weightAnalysis?: string;
   analysis: {
     avoid: string[];
     preferred: string[];
